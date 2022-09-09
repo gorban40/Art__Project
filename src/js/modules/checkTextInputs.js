@@ -7,6 +7,12 @@ const checkTextInputs = (selector) => {
                 e.preventDefault();
             }
         })
+        item.addEventListener('blur', (e) => {
+            if (/[A-Za-z0-9]/gi.test(item.value)) {
+                console.log('blia')
+                item.value = '';
+            }
+        })
     })
 };
 
