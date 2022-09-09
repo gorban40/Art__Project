@@ -1,10 +1,10 @@
 // import validateInputNumbers from "./validateInputNumbers";
+import { postData } from "../services/requests";
 
 const forms = () => {
     const form = document.querySelectorAll('form'),
           inputs = document.querySelectorAll('input'),
           upload = document.querySelectorAll('[name="upload"]');
-        console.log('helo')
 
     // validateInputNumbers('input[name="user_phone"]')
     
@@ -21,15 +21,6 @@ const forms = () => {
         designer: 'assets/server.php',
         question: 'assets/question.php'
     }
-
-    const postData = async (url, data) => {
-        let res = await fetch(url, {
-            method: "POST",
-            body: data
-        });
-
-        return await res.text();
-    };
 
     const clearInputs = () => {
         inputs.forEach(item => {
