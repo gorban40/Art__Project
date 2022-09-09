@@ -5,6 +5,7 @@ import mask from './modules/mask';
 import checkTextInputs from './modules/checkTextInputs';
 import showMoreStyles from './modules/showMoreStyles';
 import calc from './modules/calc';
+import filter from "./modules/filter";
 import uploadState from './modules/uploadState';
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -22,4 +23,5 @@ window.addEventListener('DOMContentLoaded', () => {
     checkTextInputs('[name="message"]');
     showMoreStyles('.button-styles', '.styles-2', '#styles .row');
     calc('#size', '#material', '#options', '.promocode', '.calc-price');
+    filter();
 });
