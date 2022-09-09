@@ -4350,6 +4350,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_mask__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/mask */ "./src/js/modules/mask.js");
 /* harmony import */ var _modules_checkTextInputs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/checkTextInputs */ "./src/js/modules/checkTextInputs.js");
 /* harmony import */ var _modules_showMoreStyles__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/showMoreStyles */ "./src/js/modules/showMoreStyles.js");
+/* harmony import */ var _modules_calc__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/calc */ "./src/js/modules/calc.js");
+/* harmony import */ var _modules_uploadState__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./modules/uploadState */ "./src/js/modules/uploadState.js");
+
+
 
 
 
@@ -4359,15 +4363,57 @@ __webpack_require__.r(__webpack_exports__);
 window.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
+  var state = {};
+  Object(_modules_uploadState__WEBPACK_IMPORTED_MODULE_7__["default"])(state);
   Object(_modules_modals__WEBPACK_IMPORTED_MODULE_0__["default"])();
   Object(_modules_sliders__WEBPACK_IMPORTED_MODULE_1__["default"])('.feedback-slider-item', 'horizont', '.main-prev-btn', '.main-next-btn');
   Object(_modules_sliders__WEBPACK_IMPORTED_MODULE_1__["default"])('.main-slider-item', 'vertical');
-  Object(_modules_forms__WEBPACK_IMPORTED_MODULE_2__["default"])();
+  Object(_modules_forms__WEBPACK_IMPORTED_MODULE_2__["default"])(state);
   Object(_modules_mask__WEBPACK_IMPORTED_MODULE_3__["default"])('[name="phone"]');
   Object(_modules_checkTextInputs__WEBPACK_IMPORTED_MODULE_4__["default"])('[name="name"]');
   Object(_modules_checkTextInputs__WEBPACK_IMPORTED_MODULE_4__["default"])('[name="message"]');
   Object(_modules_showMoreStyles__WEBPACK_IMPORTED_MODULE_5__["default"])('.button-styles', '.styles-2', '#styles .row');
+  Object(_modules_calc__WEBPACK_IMPORTED_MODULE_6__["default"])('#size', '#material', '#options', '.promocode', '.calc-price');
 });
+
+/***/ }),
+
+/***/ "./src/js/modules/calc.js":
+/*!********************************!*\
+  !*** ./src/js/modules/calc.js ***!
+  \********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var calc = function calc(size, material, options, promocode, resualt) {
+  var sizeBlock = document.querySelector(size),
+      materialBlock = document.querySelector(material),
+      optionsBlock = document.querySelector(options),
+      promocodeBlock = document.querySelector(promocode),
+      resualtBlock = document.querySelector(resualt);
+  var sum = 0;
+
+  var caclFunctionCheck = function caclFunctionCheck() {
+    sum = Math.round(+sizeBlock.value * +materialBlock.value + +optionsBlock.value);
+
+    if (sizeBlock.value === '' || materialBlock.value === '') {
+      resualtBlock.textContent = "Пожалуйста выберите размер и материал картины";
+    } else if (promocodeBlock.value === 'IWANTPOPART') {
+      resualtBlock.textContent = Math.round(sum * 0.7);
+    } else {
+      resualtBlock.textContent = sum;
+    }
+  };
+
+  sizeBlock.addEventListener('change', caclFunctionCheck);
+  materialBlock.addEventListener('change', caclFunctionCheck);
+  optionsBlock.addEventListener('change', caclFunctionCheck);
+  promocodeBlock.addEventListener('input', caclFunctionCheck);
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (calc);
 
 /***/ }),
 
@@ -4439,10 +4485,11 @@ __webpack_require__.r(__webpack_exports__);
 // import validateInputNumbers from "./validateInputNumbers";
 
 
-var forms = function forms() {
+var forms = function forms(state) {
   var form = document.querySelectorAll('form'),
       inputs = document.querySelectorAll('input'),
-      upload = document.querySelectorAll('[name="upload"]'); // validateInputNumbers('input[name="user_phone"]')
+      upload = document.querySelectorAll('[name="upload"]'),
+      options = document.querySelectorAll('option'); // validateInputNumbers('input[name="user_phone"]')
 
   var message = {
     loading: 'Загрузка...',
@@ -4463,6 +4510,9 @@ var forms = function forms() {
     });
     upload.forEach(function (item) {
       item.previousElementSibling.textContent = 'файл не выбран';
+    });
+    options.forEach(function (item) {
+      item.value = '';
     });
   };
 
@@ -4494,6 +4544,13 @@ var forms = function forms() {
       textMessage.textContent = message.loading;
       statusMessage.appendChild(textMessage);
       var formData = new FormData(item);
+
+      if (item.getAttribute('data-calc') === 'calc') {
+        for (var key in state) {
+          formData.append(key, state[key]);
+        }
+      }
+
       var api;
       item.closest('.popup-design') || item.classList.contains('calc_form') ? api = path.designer : api = path.question;
       console.log(api);
@@ -4729,8 +4786,8 @@ var showMoreStyles = function showMoreStyles(trigger, styles, wrapper) {
   var cards = document.querySelectorAll(styles),
       btn = document.querySelector(trigger);
   btn.addEventListener('click', function () {
-    Object(_services_requests__WEBPACK_IMPORTED_MODULE_3__["getData"])('http://localhost:3000/styles').then(function (res) {
-      return createCards(res);
+    Object(_services_requests__WEBPACK_IMPORTED_MODULE_3__["getData"])('assets/db.json').then(function (res) {
+      return createCards(res.styles);
     }).catch(function () {
       throw new Error('ERROR new');
     });
@@ -4738,10 +4795,13 @@ var showMoreStyles = function showMoreStyles(trigger, styles, wrapper) {
   });
 
   function createCards(response) {
-    response.forEach(function (item) {
+    response.forEach(function (_ref) {
+      var src = _ref.src,
+          title = _ref.title,
+          link = _ref.link;
       var card = document.createElement('div');
       card.classList.add('animated', 'fadeInUp', 'col-sm-3', 'col-sm-offset-0', 'col-xs-10', 'col-xs-offset-1');
-      card.innerHTML = "\n                <div class=\"styles-block\">\n                    <img src=".concat(item.src, " alt=\"photo\">\n                    <h4>").concat(item.title, "</h4>\n                    <a href=").concat(item.link, ">\u041F\u043E\u0434\u0440\u043E\u0431\u043D\u0435\u0435</a>\n                </div>\n            ");
+      card.innerHTML = "\n                <div class=\"styles-block\">\n                    <img src=".concat(src, " alt=\"photo\">\n                    <h4>").concat(title, "</h4>\n                    <a href=").concat(link, ">\u041F\u043E\u0434\u0440\u043E\u0431\u043D\u0435\u0435</a>\n                </div>\n            ");
       document.querySelector(wrapper).appendChild(card);
     });
   }
@@ -4849,6 +4909,47 @@ var sliders = function sliders(slides, direction, prev, next) {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (sliders);
+
+/***/ }),
+
+/***/ "./src/js/modules/uploadState.js":
+/*!***************************************!*\
+  !*** ./src/js/modules/uploadState.js ***!
+  \***************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var uploadState = function uploadState(state) {
+  var sizeBlock = document.querySelector('#size'),
+      materialBlock = document.querySelector('#material'),
+      optionsBlock = document.querySelector('#options'),
+      promocodeBlock = document.querySelector('.promocode');
+
+  function bindActionToElems(event, elem, prop) {
+    elem.addEventListener(event, function () {
+      switch (elem.nodeName) {
+        case 'SELECT':
+          state[prop] = elem.value;
+          break;
+
+        case 'INPUT':
+          state[prop] = elem.value;
+          break;
+      }
+
+      console.log(state);
+    });
+  }
+
+  bindActionToElems('change', sizeBlock, 'size');
+  bindActionToElems('change', materialBlock, 'material');
+  bindActionToElems('change', optionsBlock, 'option');
+  bindActionToElems('input', promocodeBlock, 'promocode');
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (uploadState);
 
 /***/ }),
 

@@ -4,16 +4,22 @@ import forms from './modules/forms';
 import mask from './modules/mask';
 import checkTextInputs from './modules/checkTextInputs';
 import showMoreStyles from './modules/showMoreStyles';
+import calc from './modules/calc';
+import uploadState from './modules/uploadState';
 
 window.addEventListener('DOMContentLoaded', () => {
     'use strict';
 
+    let state = {}
+
+    uploadState(state);
     modals();
     sliders('.feedback-slider-item', 'horizont', '.main-prev-btn', '.main-next-btn');
     sliders('.main-slider-item', 'vertical');
-    forms();
+    forms(state);
     mask('[name="phone"]');
     checkTextInputs('[name="name"]');
     checkTextInputs('[name="message"]');
     showMoreStyles('.button-styles', '.styles-2', '#styles .row');
+    calc('#size', '#material', '#options', '.promocode', '.calc-price');
 });

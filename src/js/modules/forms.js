@@ -1,10 +1,12 @@
 // import validateInputNumbers from "./validateInputNumbers";
 import { postData } from "../services/requests";
 
-const forms = () => {
+const forms = (state) => {
     const form = document.querySelectorAll('form'),
           inputs = document.querySelectorAll('input'),
-          upload = document.querySelectorAll('[name="upload"]');
+          upload = document.querySelectorAll('[name="upload"]'),
+          options = document.querySelectorAll('option');
+          
 
     // validateInputNumbers('input[name="user_phone"]')
     
@@ -28,6 +30,9 @@ const forms = () => {
         });
         upload.forEach(item => {
             item.previousElementSibling.textContent = 'файл не выбран';
+        });
+        options.forEach(item => {
+            item.value = '';
         })
     };
 
@@ -66,6 +71,11 @@ const forms = () => {
             statusMessage.appendChild(textMessage);
 
             const formData = new FormData(item);
+            if (item.getAttribute('data-calc') === 'calc') {
+                for(let key in state) {
+                    formData.append(key, state[key]);
+                }
+            }
             let api;
             item.closest('.popup-design') || item.classList.contains('calc_form') ? api = path.designer : api = path.question;
             console.log(api);
