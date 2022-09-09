@@ -8,6 +8,7 @@ import calc from './modules/calc';
 import filter from "./modules/filter";
 import uploadState from './modules/uploadState';
 import pictureHover from './modules/pictureHover';
+import accordion from './modules/accordion';
 
 window.addEventListener('DOMContentLoaded', () => {
     'use strict';
@@ -26,4 +27,5 @@ window.addEventListener('DOMContentLoaded', () => {
     calc('#size', '#material', '#options', '.promocode', '.calc-price');
     filter();
     pictureHover('.sizes-block');
+    accordion('.accordion-heading', '.accordion-block');
 });
