@@ -9,6 +9,7 @@ import filter from "./modules/filter";
 import uploadState from './modules/uploadState';
 import pictureHover from './modules/pictureHover';
 import accordion from './modules/accordion';
+import burger from './modules/burger'
 
 window.addEventListener('DOMContentLoaded', () => {
     'use strict';
@@ -28,4 +29,5 @@ window.addEventListener('DOMContentLoaded', () => {
     filter();
     pictureHover('.sizes-block');
     accordion('.accordion-heading', '.accordion-block');
+    burger('.burger-menu','.burger');
 });

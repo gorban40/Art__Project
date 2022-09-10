@@ -17,7 +17,7 @@ const accordion = (triggersSelector, itemsSelector) => {
         });
     });
 
-    //       blocks = document.querySelectorAll(itemsSelector);
+    // blocks = document.querySelectorAll(itemsSelector);
 
     // blocks.forEach(block => {
     //     block.classList.add('animated', 'fadeInDown');
